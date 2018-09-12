@@ -12,7 +12,7 @@ import java.util.Properties;
 
 /**
  *
- * TEST from windows cl in intellij gui3
+ * TEST from windows cl in intellij gui4
  * EnvironmentProperties is a wrapper on the standard {@link Properties} class.
  * This class uses file naming conventions to choose the correct property file
  * at runtime based on OS and Environment.
