@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 import com.brobert.exceptions.CouldNotConnectException;
 
 /**
- * Test comment
- * 
+ * Test comment 1
+ *
  * @author brobert
  */
 public class ConnectionManager {
