@@ -3,17 +3,18 @@
  */
 package com.brobert;
 
-import com.brobert.exceptions.NoEnvironmentException;
-import com.brobert.exceptions.UnknownOperatingSystemException;
-import org.apache.commons.lang.Validate;
-
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.commons.lang.Validate;
+
+import com.brobert.exceptions.NoEnvironmentException;
+import com.brobert.exceptions.UnknownOperatingSystemException;
+
 /**
- * EnvironmentProperties is a wrapper on the standard {@link Properties} class.
- * This class uses file naming conventions to choose the correct property file
- * at runtime based on OS and Environment.
+ * TEST EnvironmentProperties is a wrapper on the standard {@link Properties}
+ * class. This class uses file naming conventions to choose the correct property
+ * file at runtime based on OS and Environment.
  * <p>
  * The Environment is queried from the VM Argument '-Denv.name' which allows
  * users to specify environments at the JVM level. Web servers may be configured
@@ -40,105 +41,110 @@ import java.util.Properties;
  * @author brobert
  */
 public class EnvironmentProperties {
-    private Properties properties;
-
-    public enum OperatingSystem {
-
-        WINDOWS, UNIX, MAC, SOLARIS;
-    }
+	private Properties properties;
 
 
 
-    public static void main(String[] args) {
-        EnvironmentProperties prop = new EnvironmentProperties("DBCONNECTOR");
-        System.out.println(prop.getProperty("prop"));
-    }
+
+
+	public enum OperatingSystem {
+
+		WINDOWS, UNIX, MAC, SOLARIS;
+	}
 
 
 
-    public String getProperty(String key) {
-        return properties.getProperty(key);
-    }
+	public static void main(String[] args) {
+		EnvironmentProperties prop = new EnvironmentProperties("DBCONNECTOR");
+		System.out.println(prop.getProperty("prop"));
+	}
 
 
 
-    public void setProperty(String key, String value) {
-        properties.setProperty(key, value);
-    }
+	public String getProperty(String key) {
+		return properties.getProperty(key);
+	}
 
 
 
-    public EnvironmentProperties(String fileSuffix) {
-        Validate.notEmpty(fileSuffix);
-        properties = getEnvironmentProperties(fileSuffix);
-    }
+	public void setProperty(String key, String value) {
+		properties.setProperty(key, value);
+	}
 
 
 
-    public Properties getProperties() {
-        return properties;
-    }
+	public EnvironmentProperties(String fileSuffix) {
+		Validate.notEmpty(fileSuffix);
+		properties = getEnvironmentProperties(fileSuffix);
+	}
 
 
 
-    public String getTargetForLogs(String fileSuffix) {
-        return "Targeting property file: [" + getTarget(fileSuffix) + "] for file suffix: [" + fileSuffix + "]";
-    }
+	public Properties getProperties() {
+		return properties;
+	}
 
 
 
-    private String getTarget(String fileSuffix) {
-        OperatingSystem os = getOS();
-        String environment = getEnvironment();
-        return os.toString() + "_" + environment + "_" + fileSuffix + ".properties";
-    }
+	public String getTargetForLogs(String fileSuffix) {
+		return "Targeting property file: [" + getTarget(fileSuffix) + "] for file suffix: [" + fileSuffix + "]";
+	}
 
 
 
-    /**
-     * @param fileSuffix The suffix string that you have included in the name of your
-     *                   .properties files.
-     * @return
-     */
-    private Properties getEnvironmentProperties(String fileSuffix) {
-        Properties prop = new Properties();
-        String fileName = getTarget(fileSuffix);
-        try {
-            InputStream is = this.getClass().getClassLoader().getResourceAsStream(fileName);
-            prop.load(is);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return prop;
-    }
+	private String getTarget(String fileSuffix) {
+		OperatingSystem os = getOS();
+		String environment = getEnvironment();
+		return os.toString() + "_" + environment + "_" + fileSuffix + ".properties";
+	}
 
 
 
-    /**
-     * @return
-     */
-    private String getEnvironment() {
-        String environment = System.getProperty("env.name");
-        if (environment == null) {
-            throw new NoEnvironmentException("Environment VM argument has not been set. Please add a -Denv.name=YOURENVIRONMENT flag to the VM");
-        }
-        return environment;
-    }
+	/**
+	 * @param fileSuffix
+	 *            The suffix string that you have included in the name of your
+	 *            .properties files.
+	 * @return
+	 */
+	private Properties getEnvironmentProperties(String fileSuffix) {
+		Properties prop = new Properties();
+		String fileName = getTarget(fileSuffix);
+		try {
+			InputStream is = this.getClass().getClassLoader().getResourceAsStream(fileName);
+			prop.load(is);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return prop;
+	}
 
 
 
-    private OperatingSystem getOS() {
-        String OS = System.getProperty("os.name").toLowerCase();
-        if (OS.indexOf("win") >= 0) {
-            return OperatingSystem.WINDOWS;
-        } else if (OS.indexOf("mac") >= 0) {
-            return OperatingSystem.MAC;
-        } else if (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0) {
-            return OperatingSystem.UNIX;
-        } else if (OS.indexOf("sunos") >= 0) {
-            return OperatingSystem.SOLARIS;
-        } else {
-            throw new UnknownOperatingSystemException("Your operating system can not be determined.");
-        }
-    }
+	/**
+	 * @return
+	 */
+	private String getEnvironment() {
+		String environment = System.getProperty("env.name");
+		if (environment == null) {
+			throw new NoEnvironmentException("Environment VM argument has not been set. Please add a -Denv.name=YOURENVIRONMENT flag to the VM");
+		}
+		return environment;
+	}
+
+
+
+	private OperatingSystem getOS() {
+		String OS = System.getProperty("os.name").toLowerCase();
+		if (OS.indexOf("win") >= 0) {
+			return OperatingSystem.WINDOWS;
+		} else if (OS.indexOf("mac") >= 0) {
+			return OperatingSystem.MAC;
+		} else if (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0) {
+			return OperatingSystem.UNIX;
+		} else if (OS.indexOf("sunos") >= 0) {
+			return OperatingSystem.SOLARIS;
+		} else {
+			throw new UnknownOperatingSystemException("Your operating system can not be determined.");
+		}
+	}
 }
