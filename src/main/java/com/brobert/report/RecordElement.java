@@ -10,22 +10,20 @@ import java.lang.annotation.Target;
 
 /**
  * @author brobert
- *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface RecordElement {
+    String defaultFieldName = "Field";
 
-	String name() default "Field";
-
-
-
-	int index() default 0;
+    String name() default defaultFieldName;
 
 
+    int index() default 0;
 
-	/**
-	 * @return
-	 */
-	boolean include() default true;
+
+    /**
+     * @return
+     */
+    boolean include() default true;
 }

@@ -128,19 +128,30 @@ public class Report<T> {
 		for (Field field : t.getClass().getDeclaredFields()) {
 			field.setAccessible(true);
 			String fieldName = "Unknown";
-			if (field.isAnnotationPresent(RecordElement.class)) {
-				RecordElement el = field.getAnnotation(RecordElement.class);
+			RecordElement el = field.getAnnotation(RecordElement.class);
+			boolean isAnnotated = field.isAnnotationPresent(RecordElement.class);
+			boolean isCustomName = false;
+			if(isAnnotated){
 				if (!el.include()) {
 					continue;
 				}
+				isCustomName = !el.name().equalsIgnoreCase(RecordElement.defaultFieldName);
+			}
+			if (isAnnotated && isCustomName) {
 				fieldName = el.name();
 			} else {
-				LinkedList<String> camelCaseSplit = splitCamelCaseString(field.getName());
-				fieldName = listToDelimitedString(camelCaseSplit, " ");
+				fieldName = getCamelCaseFieldName(field.getName());
 			}
 			names.add(fieldName);
 		}
 		return names;
+	}
+
+
+
+	private String getCamelCaseFieldName(String name) {
+		LinkedList<String> camelCaseSplit = splitCamelCaseString(name);
+		return listToDelimitedString(camelCaseSplit, " ");
 	}
 
 
